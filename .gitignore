@@ -1,0 +1,8 @@
+*.pyc
+.tox
+*.egg
+dist
+build
+db.sqlite
+.idea/
+*~
