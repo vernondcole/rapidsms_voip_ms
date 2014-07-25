@@ -23,7 +23,7 @@ class TextItBackend(BackendBase):
         in a dictionary called 'config' in our INSTALLED_BACKENDS entry
         """
         self.config = config or {}
-        for key in ['messaging_token', 'number']:
+        for key in ['api_token', 'number']:
             if key not in self.config:
                 msg = "TextIt backend config must set '%s'; config is %r" %\
                       (key, config)
@@ -35,7 +35,7 @@ class TextItBackend(BackendBase):
 
     @property
     def token(self):
-        return self.config['messaging_token']
+        return self.config['api_token']
 
     def execute_textit_program(self, program):
         """
@@ -72,7 +72,7 @@ class TextItBackend(BackendBase):
 
         params = {
             'action': 'create',  # Required by TextIt
-            'token': self.config['messaging_token'],  # Identify ourselves
+            'token': self.config['api_token'],  # Identify ourselves
             'program': signed_program,  # Additional data
         }
         data = json.dumps(params)

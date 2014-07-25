@@ -28,4 +28,4 @@ class TestExecute(TextItTest):
         signed_program = data['program']
         extracted_program = signing.loads(signed_program)
         self.assertEqual(program, extracted_program)
-        self.assertEqual(self.get_config()['messaging_token'], data['token'])
+        self.assertEqual(self.get_config()['api_token'], data['token'])

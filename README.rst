@@ -8,8 +8,10 @@ Requirements
 ------------
 
  * `RapidSMS <http://www.rapidsms.org>`_, version 0.14.0 or later
-    (pip install 'rapidsms>=0.14.0')
- * `Django <https://djangoproject.com>`_, version 1.4 or later.
+    (pip install rapidsms)
+ * `Django <https://djangoproject.com>`_,
+    (pip install django)
+ *  (for testing):  `pip install mock`
 
 Usage
 -----
@@ -42,10 +44,10 @@ For example::
             "ENGINE": "rtextit.outgoing.TextItBackend",
             'config': {
                 # Your TextIt application's outbound token for messaging (required)
-                'messaging_token': 'YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY',
-                # Your TextIt application's voice/messaging phone number, starting
+                'api_token': 'YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY',
+                # Your TextIt application's messaging phone number, starting
                 # with "+" and the country code (required)
-                'number': '+1-###-###-####',
+                'number': '+1##########',
             },
         },
     }

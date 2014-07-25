@@ -79,7 +79,7 @@ class TextItViewTest(TextItTest):
                 'parameters': {
                     'program': signed_program,
                 },
-                'token': self.get_config()['messaging_token'],
+                'token': self.get_config()['api_token'],
             }
         }
         response = self.send_to_view(data)
@@ -99,7 +99,7 @@ class TextItViewTest(TextItTest):
                 'parameters': {
                     'program': bad_signed_program,
                 },
-                'token': self.get_config()['messaging_token'],
+                'token': self.get_config()['api_token'],
             }
         }
         response = self.send_to_view(data)

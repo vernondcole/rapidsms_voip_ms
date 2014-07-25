@@ -23,10 +23,33 @@ if not settings.configured:
             'textitbackend': {
                 'ENGINE': 'rtextit.outgoing.TextItBackend',
                 'config': {
-                    "messaging_token": "12345abc",
-                    "number": "+12345",
+                    "api_token": "12345abc",
+                    "number": "+12345678901",
                 },
             }
+        },
+        LOGGING = {
+            'version': 1,
+            'disable_existing_loggers': False,
+            'handlers': {
+                'file': {
+                    'level': 'DEBUG',
+                    'class': 'logging.FileHandler',
+                    'filename': '/tmp/debug.log',
+                },
+            },
+            'loggers': {
+                'django.request': {
+                    'handlers': ['file'],
+                    'level': 'DEBUG',
+                    'propagate': True,
+                },
+                'rtextit.views': {
+                    'handlers': ['file'],
+                    'level': 'DEBUG',
+                    'propigate': True,
+                }
+            },
         }
     )
 
