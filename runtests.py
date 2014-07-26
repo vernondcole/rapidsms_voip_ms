@@ -23,8 +23,8 @@ if not settings.configured:
             'textitbackend': {
                 'ENGINE': 'rtextit.outgoing.TextItBackend',
                 'config': {
-                    "api_token": "12345abc",
-                    "number": "+12345678901",
+                    "api_token": "de78a27456b82f8876e48d7ef339f75a1a6cfbd2",
+                    "number": "+2348099890451",
                 },
             }
         },

@@ -2,7 +2,7 @@ import json
 import logging
 
 from django.core.exceptions import ImproperlyConfigured
-from django.core import signing
+from django.conf import settings
 
 from rapidsms.backends.base import BackendBase
 
@@ -11,7 +11,7 @@ import requests
 
 logger = logging.getLogger(__name__)
 
-base_url = 'https://api.textit.in/api/v1.json'
+base_url = 'https://api.textit.in/api/v1/{}.json'
 
 
 class TextItBackend(BackendBase):
@@ -37,53 +37,26 @@ class TextItBackend(BackendBase):
     def token(self):
         return self.config['api_token']
 
-    def execute_textit_program(self, program):
+    def textit_post(self, endpoint, params):
         """
-        Ask TextIt to execute a program for us.
-
-        We can't do this directly;
-        we have to ask TextIt to call us back and then give TextIt the
-        program in the response body to that request from TextIt.
-
-        But we can pass data to TextIt and ask TextIt to pass it back
-        to us when TextIt calls us back. So, we just bundle up the program
-        and pass it to TextIt, then when TextIt calls us back, we
-        give the program back to TextIt.
-
-        We also cryptographically sign our program, so that
-        we can verify when we're called back with a program, that it's
-        one that we sent to TextIt and has not gotten mangled.
-
-        See https://docs.djangoproject.com/en/1.4/topics/signing/ for more
-        about the signing API.
+        Ask TextIt to execute a program for us using a POST
 
         See http://textit.in/api/v1
         for the format we're using to call TextIt, pass it data, and ask
         them to call us back.
 
-
-
-        :param program: A TextIt program, i.e. a dictionary with a 'textit'
-            key whose value is a list of dictionaries, each representing
-            a TextIt command.
+        :param endpoint: the TextIt endpoint name: i.e.: "sms", "contacts", etc.
+        :param params: A TextIt program, i.e. a dictionary containing the
+             parameters for our JSON call.
         """
-        # The signer will also "pickle" the data structure for us
-        signed_program = signing.dumps(program)
-
-        params = {
-            'action': 'create',  # Required by TextIt
-            'token': self.config['api_token'],  # Identify ourselves
-            'program': signed_program,  # Additional data
-        }
         data = json.dumps(params)
 
-        # Tell TextIt we'd like our response in JSON format
-        # and our data is in that format too.
         headers = {
             'accept': 'application/json',
             'content-type': 'application/json',
+            'authorization': 'Token {}'.format(self.config['api_token'])  # Identify ourselves
         }
-        response = requests.post(base_url,
+        response = requests.post(base_url.format(endpoint),
                                  data=data,
                                  headers=headers)
 
