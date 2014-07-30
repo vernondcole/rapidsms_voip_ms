@@ -3,7 +3,6 @@ from django.conf.urls import patterns, url
 from ..views import message_received
 from .utils import BACKEND_NAME
 
-
 urlpatterns = patterns('',  # nopep8
     url(r"^backend_textit/$", name="textit-backend",
         view=message_received,

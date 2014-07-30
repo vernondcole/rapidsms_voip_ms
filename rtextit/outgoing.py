@@ -7,7 +7,17 @@ from django.conf import settings
 from rapidsms.backends.base import BackendBase
 
 import requests
+from requests.auth import AuthBase
 
+class TokenAuth(AuthBase):
+    """ special "Token" authentication for TextIt """
+    def __init__(self, token):
+        self.token = token
+    def __call__(self, r):
+        r.headers['Token'] = self.token
+        return r
+    def __repr__(self):
+        return '<TokenAuth=Token {}>'.format(self.token)
 
 logger = logging.getLogger(__name__)
 
@@ -54,19 +64,20 @@ class TextItBackend(BackendBase):
         headers = {
             'accept': 'application/json',
             'content-type': 'application/json',
-            'authorization': 'Token {}'.format(self.config['api_token'])  # Identify ourselves
         }
         response = requests.post(base_url.format(endpoint),
                                  data=data,
-                                 headers=headers)
+                                 headers=headers,
+                                 auth=TokenAuth(self.token))
 
         # If the HTTP request failed, raise an appropriate exception - e.g.
         # if our network (or TextIt) are down:
         response.raise_for_status()
 
-        result = json.loads(response.content)
-        if not result['success']:
-            raise Exception("TextIt error: %s" % result.get('error', 'unknown'))
+        result = response.json()
+        print('response was={!r}'.format(response))  ###
+        print('result was={!r}'.format(result))  ###
+
 
     def send(self, id_, text, identities, context=None):
         """
@@ -83,26 +94,8 @@ class TextItBackend(BackendBase):
         """
 
         # Build our program
-        from_ = self.config['number'].replace('-', '')
-        commands = []
-        for identity in identities:
-            # We'll include a 'message' command for each recipient.
-            # The TextIt doc explicitly says that while passing a list
-            # of destination numbers is not a syntax error, only the
-            # first number on the list will get sent the message. So
-            # we have to send each one as a separate `message` command.
-            commands.append(
-                {
-                    'message': {
-                        'say': {'value': text},
-                        'to': identity,
-                        'from': from_,
-                        'channel': 'TEXT',
-                        'network': 'SMS'
-                    }
-                }
-            )
-            program = {
-                'textit': commands,
+        program = {
+                'phone': identities,
+                'text': text
             }
-        self.execute_textit_program(program)
+        self.textit_post('sms', program)

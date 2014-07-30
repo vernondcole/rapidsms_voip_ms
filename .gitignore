@@ -3,6 +3,6 @@
 *.egg
 dist
 build
-db.sqlite
+*.sqlite
 .idea/
 *~

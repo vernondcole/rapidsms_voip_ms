@@ -79,3 +79,6 @@ def message_received(request, backend_name):
 
     logger.error("@@No recognized command in request from TextIt")
     return HttpResponseBadRequest()
+
+def index(request):
+    return HttpResponse("Hello, world. You're at the rTextIt_test index.")
