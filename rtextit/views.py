@@ -1,84 +1,63 @@
 # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
+from __future__ import print_function, unicode_literals
 
-import json
 import logging
 
-from django.core import signing
-from django.http import HttpResponse, HttpResponseServerError, \
-    HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseServerError, HttpResponseBadRequest
+from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 
 logger = logging.getLogger('rtextit.views')
 
+if 'rapidsms' in settings.INSTALLED_APPS:
+    from rapidsms.router import receive, lookup_connections
+else:
+    print('NOTE: loading test stub for RapidSMS.')
+    from tests.rapidsms_stub import receive, lookup_connections
 
-from rapidsms.router import receive, lookup_connections
-
-
-@require_POST
 @csrf_exempt
-def message_received(request, backend_name):
+@require_POST
+def message_received(request, selector):
     """Handle HTTP requests from TextIt.
     """
-
-    logger.debug("@@ request from TextIt - raw data: %s" % request.body)
     try:
-        post = json.loads(request.body)
-    except ValueError:
-        logger.exception("EXCEPTION decoding post data in incoming request")
-        return HttpResponseBadRequest()
+        if request.META['QUERY_STRING'] != settings.INSTALLED_BACKENDS['textit-backend']['config']['query_key']:
+            return HttpResponseBadRequest(
+                'query_key "{}" does not match configured value from django settings "{}"'.format(
+                    request.META['QUERY_STRING'], settings.INSTALLED_BACKENDS['textit-backend']['config']['query_key']))
     except Exception:
-        logger.exception("@@responding to textit with error")
-        return HttpResponseServerError()
-    logger.debug("@@ Decoded data: %r" % post)
+        raise
+        return  HttpResponseBadRequest("No query_key set up in settings INSTALLED_BACKENDS['textit_backend']")
 
-    if 'session' not in post:
-        logger.error("@@HEY, post does not contain session, "
-                     "what's going on?")
-        return HttpResponseBadRequest()
-
-    session = post['session']
-    parms = session.get('parameters', {})
-
-    if 'program' in parms:
-        # Execute a program that we passed to TextIt to pass back to us.
-        # Extract the program, while verifying it came from us and
-        # has not been modified.
-        try:
-            program = signing.loads(parms['program'])
-        except signing.BadSignature:
-            logger.exception("@@ received program with bad signature")
-            return HttpResponseBadRequest()
-
-        return HttpResponse(json.dumps(program))
-
-    if 'from' in session:
+    post = request.POST
+    logger.debug("@@ request from TextIt - Decoded data: %r" % post)
+    post_event = post['event']
+    if post_event == 'mo_sms':
         # Must have received a message
-        # FIXME: is there any way we can verify it's really TextIt calling us?
         logger.debug("@@Got a text message")
         try:
-            from_address = session['from']['id']
-            text = session['initialText']
-
-            logger.debug("@@Received message from %s: %s" %
-                         (from_address, text))
+            from_address = post['phone']
+            text = post['text']
+            logger.debug("@@Received message from %s: %s" % (from_address, text))
 
             # pass the message to RapidSMS
-            identity = from_address
-            connections = lookup_connections(backend_name, [identity])
+            connections = lookup_connections(selector, from_address)
             receive(text, connections[0])
 
-            # Respond nicely to TextIt
-            program = json.dumps({"textit": [{"hangup": {}}]})
-            logger.debug("@@responding to textit with hangup")
-            return HttpResponse(program)
         except Exception:
             logger.exception("@@responding to textit with error")
-            return HttpResponseServerError()
-
+            return HttpResponseServerError("Error finding connection for selector={}, from={}".format(
+                selector, from_address))
+        # Respond nicely to TextIt
+        return HttpResponse("OK")
+    # elif:
+    if post_event in ['mt_sent', 'mt_dlvd']:
+        return HttpResponse("thanks")  # confirmation messages are ignored
+    # else:
     logger.error("@@No recognized command in request from TextIt")
-    return HttpResponseBadRequest()
+    return HttpResponseBadRequest("Unexpected event code={}".post_event)
 
 def index(request):
     return HttpResponse("Hello, world. You're at the rTextIt_test index.")

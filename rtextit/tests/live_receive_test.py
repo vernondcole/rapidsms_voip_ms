@@ -9,27 +9,19 @@ from django.views.decorators.csrf import csrf_exempt
 def message_echo(request, rcvd_url):
     """Handle HTTP requests from TextIt.
     """
-
-    #
-    # if 'program' in parms:
-    #     # Execute a program that we passed to TextIt to pass back to us.
-    #     # Extract the program, while verifying it came from us and
-    #     # has not been modified.
-    #     try:
-    #         program = signing.loads(parms['program'])
-    #     except signing.BadSignature:
-    #         logger.exception("@@ received program with bad signature")
-    #         return HttpResponseBadRequest()
-    print('rcvd_url="{}"'.format(rcvd_url))
-    print('path={}'.format(request.get_full_path()))
+    print('live_receive_test: rcvd_url="{}"'.format(rcvd_url))
     if request.method != 'POST':
-        print('Unexpected method={}'.format(request.method))
+        print('  Unexpected method={}'.format(request.method))
         return HttpResponseNotAllowed(['POST'])
-    print('POST={!r}'.format(request))
-    if request.POST['text'].starts_with('echo '):
-        js = {'phone': request.POST['phone'],
-              'text': 'Okay<{}>'.format(request.POST['text'])
-        }
-        return HttpResponse(json.dumps(js))
     # else:
-    return HttpResponse("Ok")
+    for key in request.POST:
+        print('  {}="{}"'.format(key, request.POST[key]))
+    if request.POST['text'].startswith('echo '):
+        print('  Echoing:"{}"'.format(request.POST['text'][5:]))
+        js = {'phone': request.POST['phone'],
+              'relayer': request.POST['relayer'],
+              'text': 'Okay<{}>'.format(request.POST['text'][5:])
+        }
+        return HttpResponse(json.dumps(js), content_type='application/json', status=200)
+    # else:
+    return HttpResponse("Ok", status=200)

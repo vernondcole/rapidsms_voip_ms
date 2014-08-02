@@ -7,11 +7,13 @@ SECRET_KEY = 'super-secretxxxxxxxx'
 ROOT_URLCONF = 'rtextit.urls'
 
 INSTALLED_BACKENDS = {
-    'textitbackend': {
+    'textit-backend': {
         'ENGINE': 'rtextit.outgoing.TextItBackend',
         'config': {
             "api_token": "de78a27456b82f8876e48d7ef339f75a1a6cfbd2",
             "number": "+2348099890451",
+            "query_key": "key=MumbleMumble"  # this string must be sent as part of the URL from text.it
+            # define our webhook URL like: http://sam.ehealth.org.ng/textit/a/?key=MumbleMumble
         },
     }
 }
@@ -54,13 +56,13 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'rtextit',
-    "rapidsms",
-    "rapidsms.backends.database",
-    "rapidsms.contrib.handlers",
-    "rapidsms.contrib.httptester",
-    "rapidsms.contrib.messagelog",
-    "rapidsms.contrib.messaging",
-    "rapidsms.contrib.registration",
-    "rapidsms.contrib.echo",
-    "rapidsms.contrib.default",  # Must be last
+    # "rapidsms",
+    # "rapidsms.backends.database",
+    # "rapidsms.contrib.handlers",
+    # "rapidsms.contrib.httptester",
+    # "rapidsms.contrib.messagelog",
+    # "rapidsms.contrib.messaging",
+    # "rapidsms.contrib.registration",
+    # "rapidsms.contrib.echo",
+    # "rapidsms.contrib.default",  # Must be last
 )

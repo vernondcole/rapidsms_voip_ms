@@ -5,6 +5,6 @@ from .tests import live_receive_test
 
 urlpatterns = patterns('',  # nopep8
     url(r'^$', views.index, name='index'),
-    url(r"^textit/webhook/$", views.message_received, name='textit'),
-    url(r"^(?P<rcvd_url>[\w-]+)/$", live_receive_test.message_echo)
+    url(r"^textit/(?P<selector>[\w]+)/$", views.message_received, name='textit'),
+    url(r"^(?P<rcvd_url>)/$", live_receive_test.message_echo)
 )

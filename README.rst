@@ -40,7 +40,7 @@ config
 For example::
 
     INSTALLED_BACKENDS = {
-        "my-textit-backend": {
+        "textit-backend": {
             "ENGINE": "rtextit.outgoing.TextItBackend",
             'config': {
                 # Your TextIt application's outbound token for messaging (required)
@@ -48,6 +48,9 @@ For example::
                 # Your TextIt application's messaging phone number, starting
                 # with "+" and the country code (required)
                 'number': '+1##########',
+                # and the string you will have text.it send at the end of your URL like:
+                # http://your.site.org/textit/select_a/?key=MumbleMumble
+                'query_key': 'key=MumbleMumble'
             },
         },
     }
@@ -87,6 +90,10 @@ might make your URL long and random, e.g.::
 Configure your TextIt application at textit.in so its SMS/Messaging URL will invoke the Django URL that you just configured.  E.g.::
 
     https://yourserver.example.com/534bd769-3e2e-42bd-8337-2099d9f38858/
+
+You can test your implementation by sending a POST request using "curl" something like:
+`$curl -X POST localhost:8000/textit/x/?key=MumbleMumble -d "status=P&direction=I&relayer=2166&text=Twenty+four&sms=443263&phone=%2B2348092545605&time=2014-07-31T13%3A58%3A15.000000&relayer_phone=%2B23480998904&event=mo_sms"`
+
 
 Background
 ----------
