@@ -100,9 +100,9 @@ Background
 
  * `TextIt's API doc <http://textit.in/api/v1>`_
 
-Original from rapidsms-tropo by `Caktus Consulting Group <http://www.caktusgroup.com/>`_.
+Heavily borrowed from rapidsms-tropo by `Caktus Consulting Group <http://www.caktusgroup.com/>`_.
 
-Now called rapidsms_textit by `eHealth Africa <http://www.ehealthafrica.org/>`_.
+Now rapidsms_textit by `eHealth Africa <http://www.ehealthafrica.org/>`_.
 
 Changelog
 --------------------------------

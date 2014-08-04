@@ -1,12 +1,12 @@
+from __future__ import print_function, unicode_literals
 import json
 import logging
 
 import mock
 
-from django.core import signing
 from django.core.urlresolvers import reverse
 
-from .utils import TextItTest, BACKEND_NAME
+from .utils import TextItTest
 
 
 logger = logging.getLogger(__name__)
@@ -18,13 +18,12 @@ class TextItViewTest(TextItTest):
 
     def send_to_view(self, data):
         """Send data to the textit view, return whatever the response is"""
-        encoded_data = json.dumps(data)
-        url = reverse('textit-backend')
-        return self.client.post(
-            url,
-            encoded_data,
-            content_type="application/json"
-        )
+        encoded_data = {u'status': u'P', u'direction': u'I', u'phone': u'+' + data['phone'],
+                        u'text': data['text'], u'sms': u'449177', u'relayer': u'2166',
+                        u'time': u'2014-08-04T17:05:16.000000', u'relayer_phone': u'+23480998904',
+                        u'event': data['event']}
+        url = reverse('textit-backend') + '?key=somefunnystring'
+        return self.client.post(url, encoded_data)
 
     def test_cannot_get(self):
         # GET is not a valid method
@@ -33,22 +32,24 @@ class TextItViewTest(TextItTest):
 
     def test_invalid_response(self):
         """HTTP 400 should return if data is invalid."""
-        data = {'invalid-phone': '1112223333', 'message': 'hi there'}
-        response = self.send_to_view(data)
+        data = {'event': 'illegal', 'phone': '42', 'text': 'hi there'}
+        conn = mock.Mock()
+        with mock.patch('rtextit.views.lookup_connections') as \
+                lookup_connections:
+            lookup_connections.return_value = [conn]
+            with mock.patch('rtextit.views.receive') as receive:
+                response = self.send_to_view(data)
         self.assertEqual(response.status_code, 400)
+        receive.assert_called()
 
     def test_incoming_message(self):
         # If we call the view as if TextIt is delivering a message, the
         # message is passed to RapidSMS. Any unicode is preserved.
         text = u"TEXT MESSAGE \u0123\u4321"
         data = {
-            'session': {
-                'from': {
-                    'id': 'FROM',
-                },
-                'initialText': text,
-                'token': self.router.backends[BACKEND_NAME].token,
-            }
+            'event': 'mo_sms',
+            'phone': '42',
+            'text': text,
         }
         conn = mock.Mock()
         with mock.patch('rtextit.views.lookup_connections') as \
@@ -62,46 +63,3 @@ class TextItViewTest(TextItTest):
         received_text, connection = args
         self.assertEqual(text, received_text)
         self.assertEqual(conn, connection)
-        response_program = json.loads(response.content)
-        expected_program = {"textit": [{"hangup": {}}]}
-        self.assertEqual(expected_program, response_program)
-
-    def test_view_execute(self):
-        # If we call the view as if TextIt is passing the signed program,
-        # we pass back the program as the response.  Any unicode is
-        # preserved.
-        program = {
-            'textit': [{'one': 1, 'two': u"Unicode \u0123\u4321"}]
-        }
-        signed_program = signing.dumps(program)
-        data = {
-            'session': {
-                'parameters': {
-                    'program': signed_program,
-                },
-                'token': self.get_config()['api_token'],
-            }
-        }
-        response = self.send_to_view(data)
-        self.assertEqual(200, response.status_code, response.content)
-        expected_json = json.dumps(program)
-        self.assertEqual(expected_json, response.content)
-
-    def test_modified_program(self):
-        # If the signed program's signature does not check out, we
-        # fail the request and do not pass the program to TextIt (or
-        # whoever it was who called us)
-        program = [{'one': 1, 'two': 2}]
-        signed_program = signing.dumps(program)
-        bad_signed_program = signed_program + "BADSTUFF"
-        data = {
-            'session': {
-                'parameters': {
-                    'program': bad_signed_program,
-                },
-                'token': self.get_config()['api_token'],
-            }
-        }
-        response = self.send_to_view(data)
-        self.assertEqual(400, response.status_code, response.content)
-        self.assertEqual("", response.content)

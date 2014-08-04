@@ -2,7 +2,7 @@ import json
 import logging
 
 from django.core.exceptions import ImproperlyConfigured
-from django.conf import settings
+from django.utils.html import escape
 
 from rapidsms.backends.base import BackendBase
 
@@ -96,6 +96,6 @@ class TextItBackend(BackendBase):
         # Build our program
         program = {
                 'phone': identities,
-                'text': text
+                'text': escape(text)
             }
         self.textit_post('sms', program)

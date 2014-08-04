@@ -6,7 +6,7 @@ from django.core import signing
 
 import mock
 
-from .utils import TextItTest, BACKEND_NAME
+from .utils import TextItTest
 
 
 class TestExecute(TextItTest):
@@ -22,7 +22,7 @@ class TestExecute(TextItTest):
         mock_response = mock.Mock(status_code=200, content=json.dumps(result))
         with mock.patch('requests.post') as post:
             post.return_value = mock_response
-            self.router.backends[BACKEND_NAME].textit_post('xxx', program)
+            self.router.backends['textit-backend'].textit_post('xxx', program)
         post.assert_called()
         args, kwargs = post.call_args
         print('post.call_args={!r}'.format(args)) ###

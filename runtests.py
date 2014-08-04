@@ -3,7 +3,6 @@ import sys
 
 from django.conf import settings
 
-
 if not settings.configured:
     settings.configure(
         DATABASES={
@@ -13,18 +12,18 @@ if not settings.configured:
             }
         },
         INSTALLED_APPS=(
-            'rapidsms',
             'rtextit',
         ),
         SITE_ID=1,
         SECRET_KEY='super-secret',
         ROOT_URLCONF='rtextit.tests.urls',
         INSTALLED_BACKENDS={
-            'textitbackend': {
+            'textit-backend': {
                 'ENGINE': 'rtextit.outgoing.TextItBackend',
                 'config': {
                     "api_token": "de78a27456b82f8876e48d7ef339f75a1a6cfbd2",
                     "number": "+2348099890451",
+                    "query_key": "key=somefunnystring"
                 },
             }
         },

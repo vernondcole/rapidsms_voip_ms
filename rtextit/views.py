@@ -19,7 +19,7 @@ else:
 
 @csrf_exempt
 @require_POST
-def message_received(request, selector):
+def message_received(request, backend_name):
     """Handle HTTP requests from TextIt.
     """
     try:
@@ -33,6 +33,7 @@ def message_received(request, selector):
 
     post = request.POST
     logger.debug("@@ request from TextIt - Decoded data: %r" % post)
+    print('views.message_received: post=',repr(post)) ###
     post_event = post['event']
     if post_event == 'mo_sms':
         # Must have received a message
@@ -43,13 +44,13 @@ def message_received(request, selector):
             logger.debug("@@Received message from %s: %s" % (from_address, text))
 
             # pass the message to RapidSMS
-            connections = lookup_connections(selector, from_address)
+            connections = lookup_connections(backend_name, from_address)
             receive(text, connections[0])
 
         except Exception:
             logger.exception("@@responding to textit with error")
-            return HttpResponseServerError("Error finding connection for selector={}, from={}".format(
-                selector, from_address))
+            return HttpResponseServerError("Error finding connection for backend_name={}, from={}".format(
+                backend_name, from_address))
         # Respond nicely to TextIt
         return HttpResponse("OK")
     # elif:
@@ -57,7 +58,7 @@ def message_received(request, selector):
         return HttpResponse("thanks")  # confirmation messages are ignored
     # else:
     logger.error("@@No recognized command in request from TextIt")
-    return HttpResponseBadRequest("Unexpected event code={}".post_event)
+    return HttpResponseBadRequest("Unexpected event code='{}'".format(post_event))
 
 def index(request):
     return HttpResponse("Hello, world. You're at the rTextIt_test index.")
