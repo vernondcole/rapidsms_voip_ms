@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='rapidsms-textit',
-    version=__import__('rtextit').__version__,
+    version=__import__('textit').__version__,
     author='V.Cole @ eHealthAfrica',
     author_email='vernon.cole@ehealthafrica.org',
     packages=find_packages(),

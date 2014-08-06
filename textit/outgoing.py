@@ -7,17 +7,6 @@ from django.utils.html import escape
 from rapidsms.backends.base import BackendBase
 
 import requests
-from requests.auth import AuthBase
-
-class TokenAuth(AuthBase):
-    """ special "Token" authentication for TextIt """
-    def __init__(self, token):
-        self.token = token
-    def __call__(self, r):
-        r.headers['Token'] = self.token
-        return r
-    def __repr__(self):
-        return '<TokenAuth=Token {}>'.format(self.token)
 
 logger = logging.getLogger(__name__)
 
@@ -43,10 +32,6 @@ class TextItBackend(BackendBase):
                 "entry of the backend dictionary"
             raise ImproperlyConfigured(msg)
 
-    @property
-    def token(self):
-        return self.config['api_token']
-
     def textit_post(self, endpoint, params):
         """
         Ask TextIt to execute a program for us using a POST
@@ -64,19 +49,17 @@ class TextItBackend(BackendBase):
         headers = {
             'accept': 'application/json',
             'content-type': 'application/json',
+            'Authorization': 'Token ' + self.config['api_token']
         }
         response = requests.post(base_url.format(endpoint),
                                  data=data,
-                                 headers=headers,
-                                 auth=TokenAuth(self.token))
+                                 headers=headers)
 
         # If the HTTP request failed, raise an appropriate exception - e.g.
         # if our network (or TextIt) are down:
         response.raise_for_status()
 
         result = response.json()
-        print('response was={!r}'.format(response))  ###
-        print('result was={!r}'.format(result))  ###
 
 
     def send(self, id_, text, identities, context=None):

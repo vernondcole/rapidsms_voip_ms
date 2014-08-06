@@ -37,10 +37,15 @@ config
         The phone number your TextIt app is using. Must start with "+" and the
         country code.
 
+    query_key
+        A low-grade authorization key to help guard against the most simple attempts
+        to sneak false information in to the system. It will be expected to be sent
+        (as clear text) as a query string in the URL of POST requests from text.it
+
 For example::
 
     INSTALLED_BACKENDS = {
-        "textit-backend": {
+        "my-textit-backend": {
             "ENGINE": "rtextit.outgoing.TextItBackend",
             'config': {
                 # Your TextIt application's outbound token for messaging (required)
@@ -49,7 +54,7 @@ For example::
                 # with "+" and the country code (required)
                 'number': '+1##########',
                 # and the string you will have text.it send at the end of your URL like:
-                # http://your.site.org/textit/select_a/?key=MumbleMumble
+                # http://your.site.org/textit/my/?key=MumbleMumble
                 'query_key': 'key=MumbleMumble'
             },
         },
@@ -67,29 +72,12 @@ For example::
     from rtextit import views
 
     urlpatterns = patterns('',
-        url(r"^textit/$",
+        url(r"^textit/my/$",
             views.message_received,
             kwargs={'backend_name': 'my-textit-backend'},
             name='textit'),
     )
 
-You can use any URL.  If you want to add some (slight) protection against
-someone other than TextIt passing you messages pretending to be TextIt, you
-might make your URL long and random, e.g.::
-
-    from django.conf.urls.defaults import *
-    from rtextit import views
-
-    urlpatterns = patterns('',
-        url(r"^534bd769-3e2e-42bd-8337-2099d9f38858/$",
-            views.message_received,
-            kwargs={'backend_name': 'my-textit-backend'},
-            name='textit'),
-    )
-
-Configure your TextIt application at textit.in so its SMS/Messaging URL will invoke the Django URL that you just configured.  E.g.::
-
-    https://yourserver.example.com/534bd769-3e2e-42bd-8337-2099d9f38858/
 
 You can test your implementation by sending a POST request using "curl" something like:
 `$curl -X POST localhost:8000/textit/x/?key=MumbleMumble -d "status=P&direction=I&relayer=2166&text=Twenty+four&sms=443263&phone=%2B2348092545605&time=2014-07-31T13%3A58%3A15.000000&relayer_phone=%2B23480998904&event=mo_sms"`

@@ -12,14 +12,14 @@ if not settings.configured:
             }
         },
         INSTALLED_APPS=(
-            'rtextit',
+            'textit',
         ),
         SITE_ID=1,
         SECRET_KEY='super-secret',
-        ROOT_URLCONF='rtextit.tests.urls',
+        ROOT_URLCONF='textit.tests.urls',
         INSTALLED_BACKENDS={
             'textit-backend': {
-                'ENGINE': 'rtextit.outgoing.TextItBackend',
+                'ENGINE': 'textit.outgoing.TextItBackend',
                 'config': {
                     "api_token": "de78a27456b82f8876e48d7ef339f75a1a6cfbd2",
                     "number": "+2348099890451",
@@ -43,7 +43,7 @@ if not settings.configured:
                     'level': 'DEBUG',
                     'propagate': True,
                 },
-                'rtextit.views': {
+                'textit.views': {
                     'handlers': ['file'],
                     'level': 'DEBUG',
                     'propigate': True,
@@ -63,7 +63,7 @@ def runtests():
     test_runner = TestRunner(verbosity=1, interactive=True, failfast=False)
     if 'test' in sys.argv[1:]:
         sys.argv.remove('test')
-    args = sys.argv[1:] or ['rtextit', ]
+    args = sys.argv[1:] or ['textit', ]
     failures = test_runner.run_tests(args)
     sys.exit(failures)
 

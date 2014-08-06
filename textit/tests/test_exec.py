@@ -2,8 +2,6 @@
 from __future__ import print_function   # ToDo , unicode_literals
 import json
 
-from django.core import signing
-
 import mock
 
 from .utils import TextItTest
@@ -25,15 +23,11 @@ class TestExecute(TextItTest):
             self.router.backends['textit-backend'].textit_post('xxx', program)
         post.assert_called()
         args, kwargs = post.call_args
-        print('post.call_args={!r}'.format(args)) ###
         endpoint = args[0].rsplit('/', 1)[1]
         # print('endpoint="{}"'.format(endpoint))
         self.assertEquals(endpoint, 'xxx.json')
-        print('msg type={}, kwargs={!r}'.format(type(kwargs), kwargs)) ###
-        authorization = kwargs['auth']
         class x():
             def __init__(self):
                 self.headers = {}
-        self.assertEqual(authorization(x()).headers['Token'], self.get_config()['api_token'])
         msg = json.loads(kwargs['data'])
         self.assertEqual(msg, program)

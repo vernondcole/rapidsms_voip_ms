@@ -4,16 +4,16 @@ SITE_ID=1
 
 SECRET_KEY = 'super-secretxxxxxxxx'
 
-ROOT_URLCONF = 'rtextit.urls'
+ROOT_URLCONF = 'textit.urls'
 
 INSTALLED_BACKENDS = {
-    'textit-backend': {
-        'ENGINE': 'rtextit.outgoing.TextItBackend',
+    'test-textit-backend': {
+        'ENGINE': 'textit.outgoing.TextItBackend',
         'config': {
             "api_token": "de78a27456b82f8876e48d7ef339f75a1a6cfbd2",
             "number": "+2348099890451",
             "query_key": "key=MumbleMumble"  # this string must be sent as part of the URL from text.it
-            # define our webhook URL like: http://sam.ehealth.org.ng/textit/a/?key=MumbleMumble
+            # define our webhook URL like: http://vern-test.digvil.org/test_textit/?key=MumbleMumble
         },
     }
 }
@@ -55,7 +55,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
-    'rtextit',
+    'textit',
     # "rapidsms",
     # "rapidsms.backends.database",
     # "rapidsms.contrib.handlers",
@@ -66,3 +66,27 @@ INSTALLED_APPS = (
     # "rapidsms.contrib.echo",
     # "rapidsms.contrib.default",  # Must be last
 )
+
+LOGGING = {
+            'version': 1,
+            'disable_existing_loggers': False,
+            'handlers': {
+                'file': {
+                    'level': 'DEBUG',
+                    'class': 'logging.FileHandler',
+                    'filename': '/tmp/textit_debug.log',
+                },
+            },
+            'loggers': {
+                'django.request': {
+                    'handlers': ['file'],
+                    'level': 'DEBUG',
+                    'propagate': True,
+                },
+                'textit.views': {
+                    'handlers': ['file'],
+                    'level': 'DEBUG',
+                    'propigate': True,
+                }
+            },
+        }
