@@ -1,29 +1,47 @@
-from distribute_setup import use_setuptools
-use_setuptools()
+"""a Backend connecting RapidSMS with TextIt to receive SMS messages for a django project
+"""
+# CLASSIFIERS = """\   ##  TODO: fix these qualifiers, they are wrong
+# Development Status :: 5 - Production/Stable
+# Intended Audience :: Developers
+# License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)
+# Operating System :: POSIX :: Linux
+# Programming Language :: Python
+# Programming Language :: Python :: 3
+# Topic :: Software Development
+# Topic :: Software Development :: Libraries :: Python Modules
+# Topic :: Database
+# """
 
-from setuptools import setup, find_packages
+MAINTAINER          = "eHealth Africa staff"
+MAINTAINER_EMAIL    = "service@ehealthafrica.org"
+DESCRIPTION         = 'a Backend connecting RapidSMS with TextIt to receive SMS messages for a django project'
+URL                 = 'https://github.com/ehealthafrica/rapidsms-textit/'
+##CLASSIFIERS         = filter(None, CLASSIFIERS.split('\n'))  ## TODO fix the qualifiers
+PLATFORMS           = ["Linux"]
 
-setup(
-    name='rapidsms-textit',
-    version=__import__('textit').__version__,
-    author='V.Cole @ eHealthAfrica',
-    author_email='vernon.cole@ehealthafrica.org',
-    packages=find_packages(),
-    include_package_data=True,
-    exclude_package_data={
-        '': ['*.sql', '*.pyc'],
-    },
-    url='https://github.com/ehealthafrica/rapidsms-textit/',
-    license='LICENSE.txt',
-    description='RapidSMS TextIt Threadless Backend',
-    long_description=open('README.rst').read(),
-    install_requires=(
-        'rapidsms>=0.10.0',
-        'requests>=1.2.0',
-        'django>=1.4',
-    ),
-    test_suite="runtests.runtests",
-    tests_require=(
-        'mock',
+
+def setup_package():
+
+    from distutils.core import setup
+
+    setup(
+        maintainer=MAINTAINER,
+        maintainer_email=MAINTAINER_EMAIL,
+        description=DESCRIPTION,
+        url=URL,
+
+        license='LICENSE.txt from caktus',
+        ## classifiers=CLASSIFIERS,   ## TODO correct classifiers
+        ## keywords='database ado odbc dbapi db-api Microsoft SQL',
+
+        platforms=PLATFORMS,
+        package_dir = {'rapidsms_textit':''},
+        name='rapidsms-textit',
+        version=__import__('textit').__version__,
+        packages=['rapidsms_textit'],
+        long_description=open('README.rst').read()
     )
-)
+    return
+
+if __name__ == '__main__':
+    setup_package()
