@@ -74,8 +74,6 @@ class TextItBackend(BackendBase):
         :param context: Unused, included for compatibility with RapidSMS.
         """
 
-        logger.debug("Sending to: %r" % identities)
-
         # Build our program
         if isinstance(identities, basestring):
             identities = [identities]

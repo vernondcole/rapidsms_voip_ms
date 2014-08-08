@@ -57,7 +57,7 @@ def message_received(request, backend_name):
             return HttpResponseBadRequest("Malformed POST message")
         try:
             # pass the message to RapidSMS
-            connections = lookup_connections(backend_name, from_address)
+            connections = lookup_connections(backend_name, [from_address])
             receive(text, connections[0])
         except Exception:
             r = "Error finding connection for backend_name={}, from={}".format(
