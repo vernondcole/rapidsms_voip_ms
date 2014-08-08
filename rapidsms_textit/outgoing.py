@@ -8,7 +8,7 @@ from rapidsms.backends.base import BackendBase
 
 import requests
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('textit.outgoing')
 
 base_url = 'https://api.textit.in/api/v1/{}.json'
 
@@ -51,6 +51,7 @@ class TextItBackend(BackendBase):
             'content-type': 'application/json',
             'Authorization': 'Token ' + self.config['api_token']
         }
+        logger.debug("Sending from TextIt - headers: %r Date: %r" % (headers, data))
         response = requests.post(base_url.format(endpoint),
                                  data=data,
                                  headers=headers)

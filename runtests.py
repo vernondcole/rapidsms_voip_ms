@@ -59,12 +59,7 @@ from django.test.utils import get_runner
 
 
 def runtests():
-    for p in sys.path:
-        print(p)
-    #import rapidsms_textit
-    #print(rapidsms_textit.__file__)
-    import rapidsms_textit.outgoing
-    print(rapidsms_textit.outgoing.__file__)
+
     TestRunner = get_runner(settings)
     test_runner = TestRunner(verbosity=1, interactive=True, failfast=False)
     if 'test' in sys.argv[1:]:
