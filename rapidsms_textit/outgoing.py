@@ -54,7 +54,7 @@ class TextItBackend(BackendBase):
         response = requests.post(base_url.format(endpoint),
                                  data=data,
                                  headers=headers)
-        logger.debug("Response from text.it : %r" % response)
+
         # If the HTTP request failed, raise an appropriate exception - e.g.
         # if our network (or TextIt) are down:
         response.raise_for_status()
@@ -74,7 +74,11 @@ class TextItBackend(BackendBase):
         :param context: Unused, included for compatibility with RapidSMS.
         """
 
+        logger.debug("Sending to: %r" % identities)
+
         # Build our program
+        if isinstance(identities, basestring):
+            identities = [identities]
         ids = ['+{}'.format(id) if not id.startswith('+') else id for id in identities]
 
         program = {
