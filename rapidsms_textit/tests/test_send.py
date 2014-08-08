@@ -18,7 +18,7 @@ class TextItSendTest(TextItTest):
         self.assertEqual(args[0], 'sms')
         program = args[1]
         expected_program = {
-            'phone': ["id1", "id2"],
+            'phone': ["+id1", "+id2"],
             'text': text
         }
         self.assertEqual(expected_program, program)

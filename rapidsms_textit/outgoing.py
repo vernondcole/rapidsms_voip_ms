@@ -78,8 +78,10 @@ class TextItBackend(BackendBase):
         """
 
         # Build our program
+        ids = ['+{}'.format(id) if not id.startswith('+') else id for id in identities]
+
         program = {
-                'phone': identities,
+                'phone': ids,
                 'text': escape(text)
             }
         self.textit_post('sms', program)

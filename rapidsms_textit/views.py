@@ -48,7 +48,8 @@ def message_received(request, backend_name):
         # Must have received a message
         logger.debug("@@Got a text message")
         try:
-            from_address = post['phone']
+            fa = post['phone']
+            from_address = fa[1:] if fa.startswith('+') else fa  # strip off the plus sign
             text = post['text']
             logger.debug("@@Received message from %s: %s" % (from_address, text))
         except KeyError:
