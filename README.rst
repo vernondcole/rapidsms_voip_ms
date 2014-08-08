@@ -18,13 +18,13 @@ Usage
 
 Create an application at textit.in.  Its type should be "Web API".
 
-Add rtextit to your Python path and set up the textit backend in your Django
+Add rapidsms_textit to your Python path and set up the textit backend in your Django
 settings file.
 
 The required settings for your textit backend in INSTALLED_BACKENDS are:
 
 ENGINE
-    "rtextit.outgoing.TextItBackend"
+    "rapidsms_textit.outgoing.TextItBackend"
 
 config
     A dictionary with the rest of your settings for this backend. Required
@@ -46,7 +46,7 @@ For example::
 
     INSTALLED_BACKENDS = {
         "my-textit-backend": {
-            "ENGINE": "rtextit.outgoing.TextItBackend",
+            "ENGINE": "rapidsms_textit.outgoing.TextItBackend",
             'config': {
                 # Your TextIt application's outbound token for messaging (required)
                 'api_token': 'YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY',
@@ -63,13 +63,13 @@ For example::
 At this point you should be able to send outgoing messages, but more setup is needed to receiving incoming messages.
 
 Set up your URLconf to send incoming http requests from textit to
-`rtextit.views.message_received`, passing the backend_name parameter, whose
+`rapidsms_textit.views.message_received`, passing the backend_name parameter, whose
 value must be the same as the backend name you used in INSTALLED_BACKENDS.
 
 For example::
 
     from django.conf.urls.defaults import *
-    from rtextit import views
+    from rapidsms_textit import views
 
     urlpatterns = patterns('',
         url(r"^textit/my/$",
