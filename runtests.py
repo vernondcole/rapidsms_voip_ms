@@ -12,14 +12,14 @@ if not settings.configured:
             }
         },
         INSTALLED_APPS=(
-            'textit',
+            'rapidsms_textit',
         ),
         SITE_ID=1,
         SECRET_KEY='super-secret',
-        ROOT_URLCONF='textit.tests.urls',
+        ROOT_URLCONF='rapidsms_textit.tests.urls',
         INSTALLED_BACKENDS={
-            'textit-backend': {
-                'ENGINE': 'textit.outgoing.TextItBackend',
+            'my-backend': {
+                'ENGINE': 'rapidsms_textit.outgoing.TextItBackend',
                 'config': {
                     "api_token": "de78a27456b82f8876e48d7ef339f75a1a6cfbd2",
                     "number": "+2348099890451",
@@ -59,11 +59,17 @@ from django.test.utils import get_runner
 
 
 def runtests():
+    for p in sys.path:
+        print(p)
+    #import rapidsms_textit
+    #print(rapidsms_textit.__file__)
+    import rapidsms_textit.outgoing
+    print(rapidsms_textit.outgoing.__file__)
     TestRunner = get_runner(settings)
     test_runner = TestRunner(verbosity=1, interactive=True, failfast=False)
     if 'test' in sys.argv[1:]:
         sys.argv.remove('test')
-    args = sys.argv[1:] or ['textit', ]
+    args = sys.argv[1:] or ['rapidsms_textit', ]
     failures = test_runner.run_tests(args)
     sys.exit(failures)
 

@@ -7,4 +7,4 @@ class TextItTest(RapidTest):
     backends = settings.INSTALLED_BACKENDS
 
     def get_config(self):
-        return settings.INSTALLED_BACKENDS['textit-backend']['config']
+        return settings.INSTALLED_BACKENDS['my-backend']['config']

@@ -7,7 +7,7 @@ import datetime
 
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
-from textit.outgoing import TextItBackend
+from rapidsms_textit.outgoing import TextItBackend
 
 
 class Command(BaseCommand):

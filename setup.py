@@ -36,8 +36,8 @@ def setup_package():
 
         platforms=PLATFORMS,
         package_dir = {'rapidsms_textit':''},
-        name='rapidsms-textit',
-        version=__import__('textit').__version__,
+        name='rapidsms-rapidsms_textit',
+        version=__import__('rapidsms_textit').__version__,
         packages=['rapidsms_textit'],
         long_description=open('README.rst').read()
     )

@@ -20,7 +20,7 @@ class TestExecute(TextItTest):
         mock_response = mock.Mock(status_code=200, content=json.dumps(result))
         with mock.patch('requests.post') as post:
             post.return_value = mock_response
-            self.router.backends['textit-backend'].textit_post('xxx', program)
+            self.router.backends['my-backend'].textit_post('xxx', program)
         post.assert_called()
         args, kwargs = post.call_args
         endpoint = args[0].rsplit('/', 1)[1]

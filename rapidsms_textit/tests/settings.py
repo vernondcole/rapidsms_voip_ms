@@ -4,11 +4,11 @@ SITE_ID=1
 
 SECRET_KEY = 'super-secretxxxxxxxx'
 
-ROOT_URLCONF = 'textit.urls'
+ROOT_URLCONF = 'rapidsms_textit.urls'
 
 INSTALLED_BACKENDS = {
     'test-textit-backend': {
-        'ENGINE': 'textit.outgoing.TextItBackend',
+        'ENGINE': 'rapidsms_textit.outgoing.TextItBackend',
         'config': {
             "api_token": "de78a27456b82f8876e48d7ef339f75a1a6cfbd2",
             "number": "+2348099890451",
@@ -55,7 +55,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
-    'textit',
+    'rapidsms_textit',
     # "rapidsms",
     # "rapidsms.backends.database",
     # "rapidsms.contrib.handlers",

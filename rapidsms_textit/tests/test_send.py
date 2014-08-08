@@ -7,7 +7,7 @@ class TextItSendTest(TextItTest):
 
     def test_send(self):
         # send method passes needed TextIt commands to textit_post.
-        backend = self.router.backends['textit-backend']
+        backend = self.router.backends['my-backend']
         config = self.get_config()
         FROM = config['number']
         text = u"MESSAGE\u0123\u0743"

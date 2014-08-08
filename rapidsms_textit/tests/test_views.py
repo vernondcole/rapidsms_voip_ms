@@ -34,10 +34,10 @@ class TextItViewTest(TextItTest):
         """HTTP 400 should return if data is invalid."""
         data = {'event': 'illegal', 'phone': '42', 'text': 'hi there'}
         conn = mock.Mock()
-        with mock.patch('textit.views.lookup_connections') as \
+        with mock.patch('rapidsms_textit.views.lookup_connections') as \
                 lookup_connections:
             lookup_connections.return_value = [conn]
-            with mock.patch('textit.views.receive') as receive:
+            with mock.patch('rapidsms_textit.views.receive') as receive:
                 response = self.send_to_view(data)
         self.assertEqual(response.status_code, 400)
         receive.assert_called()
@@ -52,10 +52,10 @@ class TextItViewTest(TextItTest):
             'text': text,
         }
         conn = mock.Mock()
-        with mock.patch('textit.views.lookup_connections') as \
+        with mock.patch('rapidsms_textit.views.lookup_connections') as \
                 lookup_connections:
             lookup_connections.return_value = [conn]
-            with mock.patch('textit.views.receive') as receive:
+            with mock.patch('rapidsms_textit.views.receive') as receive:
                 response = self.send_to_view(data)
         self.assertEqual(200, response.status_code, response.content)
         receive.assert_called()
