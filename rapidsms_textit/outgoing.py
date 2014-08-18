@@ -3,6 +3,7 @@ import logging
 
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.html import escape
+from django.conf import settings
 
 from rapidsms.backends.base import BackendBase
 
@@ -10,7 +11,7 @@ import requests
 
 logger = logging.getLogger('textit.outgoing')
 
-base_url = 'https://api.textit.in/api/v1/{}.json'
+base_url = 'https://api.textit.in/api/v1/'
 
 
 class TextItBackend(BackendBase):
@@ -27,6 +28,7 @@ class TextItBackend(BackendBase):
                 msg = "TextIt backend config must set '%s'; config is %r" %\
                       (key, config)
                 raise ImproperlyConfigured(msg)
+        self.api_url = self.config.get('api_url', base_url)
         if kwargs:
             msg = "All textit backend config should be within the `config`"\
                 "entry of the backend dictionary"
@@ -51,7 +53,7 @@ class TextItBackend(BackendBase):
             'Authorization': 'Token ' + self.config['api_token']
         }
         logger.debug("Sending from TextIt - headers: %r Date: %r" % (headers, data))
-        response = requests.post(base_url.format(endpoint),
+        response = requests.post('{}{}.json'.format(self.api_url, endpoint),
                                  data=data,
                                  headers=headers)
 

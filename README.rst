@@ -56,6 +56,8 @@ For example::
                 # and the string you will have text.it send at the end of your URL like:
                 # http://your.site.org/textit/my/?key=MumbleMumble
                 'query_key': 'key=MumbleMumble'
+                # optionally, you may define a different URL address for the textit server. The default is:
+                # 'api_url': 'https://api.textit.in/api/v1/'
             },
         },
     }
