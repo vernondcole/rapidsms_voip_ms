@@ -12,14 +12,14 @@ if not settings.configured:
             }
         },
         INSTALLED_APPS=(
-            'rapidsms_textit',
+            'rapidsms_voip_ms',
         ),
         SITE_ID=1,
         SECRET_KEY='super-secret',
-        ROOT_URLCONF='rapidsms_textit.tests.urls',
+        ROOT_URLCONF='rapidsms_voip_ms.tests.urls',
         INSTALLED_BACKENDS={
             'my-backend': {
-                'ENGINE': 'rapidsms_textit.outgoing.TextItBackend',
+                'ENGINE': 'rapidsms_voip_ms.outgoing.TextItBackend',
                 'config': {
                     "api_token": "de78a27456b82f8876e48d7ef339f75a1a6cfbd2",
                     "number": "+2348099890451",
@@ -64,7 +64,7 @@ def runtests():
     test_runner = TestRunner(verbosity=1, interactive=True, failfast=False)
     if 'test' in sys.argv[1:]:
         sys.argv.remove('test')
-    args = sys.argv[1:] or ['rapidsms_textit', ]
+    args = sys.argv[1:] or ['rapidsms_voip_ms', ]
     failures = test_runner.run_tests(args)
     sys.exit(failures)
 

@@ -35,10 +35,10 @@ def setup_package():
         ## keywords='database ado odbc dbapi db-api Microsoft SQL',
 
         platforms=PLATFORMS,
-        package_dir = {'rapidsms_textit':''},
-        name='rapidsms-rapidsms_textit',
-        version=__import__('rapidsms_textit').__version__,
-        packages=['rapidsms_textit'],
+        package_dir = {'rapidsms_voip_ms':''},
+        name='rapidsms-rapidsms_voip_ms',
+        version=__import__('rapidsms_voip_ms').__version__,
+        packages=['rapidsms_voip_ms'],
         long_description=open('README.rst').read()
     )
     return

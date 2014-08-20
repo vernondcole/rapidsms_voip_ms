@@ -18,9 +18,15 @@ else:
     from tests.rapidsms_stub import receive, lookup_connections
 
 @csrf_exempt
-@require_POST
+@require_GET
 def message_received(request, backend_name):
-    """Handle HTTP requests from TextIt.
+    """Handle HTTP requests from voip.ms.
+SMS URL Callback: By enabling this option you will be able to send the messages to another destination e.g. your own server. If selected SMS Messages received by your DID will Send a GET request to the URL Callback provided. Available Variables for your URL:
+ {FROM} The phone number that sent you the message
+ {TO} The DID Number that receive the message
+ {MESSAGE} The content of the message
+ Example: http: //mysite.com/sms.php?to={TO}&from={FROM}&message={Message}
+
     """
     try:
         backend = settings.INSTALLED_BACKENDS[backend_name]
@@ -66,9 +72,7 @@ def message_received(request, backend_name):
             return HttpResponseServerError(r)
         # Respond nicely to TextIt
         return HttpResponse("OK")
-    # elif:
-    if post_event in ['mt_sent', 'mt_dlvd']:
-        return HttpResponse("thanks")  # confirmation messages are ignored
+
     # else:
     logger.error("@@No recognized command in request from TextIt")
     return HttpResponseBadRequest("Unexpected event code='{}'".format(post_event))

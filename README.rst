@@ -1,7 +1,7 @@
 rapidsms-textit
 ============================
 
-Basic `textit <http://www.textit.in>`_ backend for
+Basic `voip.ms <http://www.voip.ms>`_ backend for
 `RapidSMS <http://www.rapidsms.org/>`_, version 0.14.0 or later.
 
 Requirements

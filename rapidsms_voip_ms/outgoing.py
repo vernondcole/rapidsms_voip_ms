@@ -38,9 +38,7 @@ class TextItBackend(BackendBase):
         """
         Ask TextIt to execute a program for us using a POST
 
-        See http://textit.in/api/v1
-        for the format we're using to call TextIt, pass it data, and ask
-        them to call us back.
+        https://www.voip.ms/m/apidocs.php
 
         :param endpoint: the TextIt endpoint name: i.e.: "sms", "contacts", etc.
         :param params: A TextIt program, i.e. a dictionary containing the
@@ -60,20 +58,41 @@ class TextItBackend(BackendBase):
         # If the HTTP request failed, raise an appropriate exception - e.g.
         # if our network (or TextIt) are down:
         response.raise_for_status()
+""" PHP sample..
+curl_setopt($ch, CURLOPT_URL, "https://voip.ms/api/v1/rest.php?api_username={$user}&api_password={$pass}&method={$method}&account={$account}");
+$result = curl_exec($ch);
+curl_close($ch);
 
+$response=json_decode($result,true);
+
+/* Get Errors - Invalid_Account */
+if($response[status]!='success'){
+    echo $response[status];
+    exit;
+}
+
+/* Is Registered */
+echo "{$account} Registered : {$response[registered]}";
+
+"""
 
     def send(self, id_, text, identities, context=None):
         """
         Send messages when using RapidSMS 0.14.0 or later.
 
-        We can send multiple messages in one TextIt program, so we do
-        that.
+sendSMS
+Parameters
+did         => [Required] DID Numbers which is sending the message (Example: 5551234567)
+dst         => [Required] Destination Number (Example: 5551234568)
+message     => [Required] Message to be sent (Example: 'hello John Smith' max chars: 160)
 
-        :param id_: Unused, included for compatibility with RapidSMS.
-        :param string text: The message text to send.
-        :param identities: A list of identities to send the message to
-            (a list of strings)
-        :param context: Unused, included for compatibility with RapidSMS.
+Output
+Array
+(
+    [status] => success
+    [sms] => 23434
+)
+
         """
 
         # Build our program
